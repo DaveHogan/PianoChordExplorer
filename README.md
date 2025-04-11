@@ -5,6 +5,8 @@ It was built mostly with Claude 3.7 Sonnet and Cursor so expect AI noise and gar
 This was put together solely to provide quick visuals for another project I'm working on.
 It is a very rough proof of concept and requires significant work to be meaningful, but could be useful on its own.
 
+![Piano Chord Explorer Screenshot](Screenshot.png)
+
 **GitHub Repository:** [https://github.com/DaveHogan/PianoChordExplorer](https://github.com/DaveHogan/PianoChordExplorer)
 
 ## Project Status
