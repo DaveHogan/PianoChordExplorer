@@ -7,6 +7,8 @@ It is a very rough proof of concept and requires significant work to be meaningf
 
 ![Piano Chord Explorer Screenshot](Screenshot.png)
 
+**Try it out online:** [https://davehogan.co.uk/PianoChordExplorer/](https://davehogan.co.uk/PianoChordExplorer/)
+
 **GitHub Repository:** [https://github.com/DaveHogan/PianoChordExplorer](https://github.com/DaveHogan/PianoChordExplorer)
 
 ## Project Status
