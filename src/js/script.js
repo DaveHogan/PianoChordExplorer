@@ -1,4 +1,9 @@
-document.addEventListener('DOMContentLoaded', function() {
+function initializeApp() {
+    console.log("initializeApp called.");
+    console.log("Is VexFlow defined?", typeof VexFlow !== 'undefined');
+    const notationContainerCheck = document.getElementById('notation-container');
+    console.log("Is notation container found?", notationContainerCheck !== null);
+
     // Piano configuration
     const octaves = 2; // 2 octaves
     const startOctave = 3; // Base octave
@@ -32,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const showLabelsCheckbox = document.getElementById('show-labels');
     const playChordButton = document.getElementById('play-chord');
     const autoPlayCheckbox = document.getElementById('auto-play');
+    const notationContainer = document.getElementById('notation-container');
     
     // Initialize Web Audio API
     let audioContext;
@@ -590,6 +596,66 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(`Note ${noteName} not found on keyboard`);
             }
         });
+        
+        // Render notation
+        renderNotation(chordNotes);
+    }
+    
+    // Function to render staff notation using VexFlow
+    function renderNotation(notes) {
+        // Ensure VexFlow is loaded and container exists
+        if (typeof VexFlow === 'undefined' || !notationContainer) { // Simplified check
+            console.error("VexFlow library not loaded or notation container not found.");
+            return;
+        }
+        
+        // Destructure necessary classes from VexFlow
+        const { Renderer, Stave, StaveNote, Accidental, Formatter } = VexFlow;
+
+        // Clear previous notation
+        notationContainer.innerHTML = '';
+
+        // Create a new renderer and context each time
+        const vfRenderer = new Renderer(notationContainer, Renderer.Backends.SVG);
+        vfRenderer.resize(notationContainer.clientWidth, notationContainer.clientHeight);
+        const vfContext = vfRenderer.getContext();
+
+        // Determine stave width based on container (reduced width)
+        const staveWidth = notationContainer.clientWidth * 0.8; // Reduced from 0.9
+        const staveX = (notationContainer.clientWidth - staveWidth) / 2;
+        
+        // Create a stave of appropriate width at position 10, 0
+        const stave = new Stave(staveX, 0, staveWidth); // Use destructured Stave
+        
+        // Add a clef (treble for now)
+        stave.addClef("treble");
+        
+        // Connect it to the rendering context and draw.
+        stave.setContext(vfContext).draw();
+
+        // 1. Create an array of VexFlow key strings
+        const chordKeys = notes.map(note => {
+            let noteName = note.slice(0, -1); // Remove octave
+            const octave = note.slice(-1);
+            let vfNoteName = noteName.toLowerCase().replace('♯', '#').replace('♭', 'b');
+            return `${vfNoteName}/${octave}`;
+        });
+
+        // 2. Create a single StaveNote for the chord
+        const chordNote = new StaveNote({ keys: chordKeys, duration: "q" }); // Whole chord in one StaveNote
+
+        // 3. Add accidentals to the single StaveNote based on the original note names
+        notes.forEach((note, index) => {
+            const noteName = note.slice(0, -1);
+            if (noteName.includes('♯') || noteName.includes('♭')) {
+                const accidentalType = noteName.includes('♯') ? '#' : 'b';
+                // Use addModifier to add the accidental to the specific note index within the chord
+                chordNote.addModifier(new Accidental(accidentalType), index);
+            }
+        });
+
+        // 4. Helper to justify and draw the single chord note
+        Formatter.FormatAndDraw(vfContext, stave, [chordNote]); // Pass the single chordNote in an array
     }
     
     // Function to update inversion options based on chord type
@@ -614,10 +680,15 @@ document.addEventListener('DOMContentLoaded', function() {
         secondOption.value = '2';
         secondOption.textContent = 'Second Inversion';
         inversionSelect.appendChild(secondOption);
-        
-        // Third inversion removed as requested
     }
     
     // Initial setup of inversion options
     updateInversionOptions();
+}
+
+// Wait for the entire page, including external scripts like VexFlow, to load
+window.addEventListener('load', () => {
+    console.log("Window load event fired.");
+    console.log("Is VexFlow defined at window.onload?", typeof VexFlow !== 'undefined');
+    initializeApp();
 }); 
