@@ -54,6 +54,12 @@ jobs:
           # switch checkout token and potentially add env var here using a PAT.
           # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
 
+      # --- Inject Version into HTML --- 
+      - name: Inject version into HTML
+        # Only run on direct pushes to main branch (after version bump)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: node scripts/inject-version.js
+
       # ----- Deployment Steps (Conditional) -----
       - name: Setup Pages
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
