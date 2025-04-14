@@ -1,6 +1,6 @@
 {
   "name": "piano-chord-explorer",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A web application that displays piano chords and their inversions with sound playback",
   "main": "src/index.html",
   "scripts": {
@@ -27,4 +27,4 @@
   "devDependencies": {
     "serve": "^14.2.1"
   }
-} 
+}
