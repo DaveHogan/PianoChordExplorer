@@ -174,11 +174,10 @@ select {
 }
 
 .chord-info {
-    text-align: center;
-    margin-top: 30px;
-    padding: 15px;
-    background-color: #f0f7ff;
-    border-radius: 5px;
+    text-align: left;
+    flex-basis: 45%;
+    min-width: 200px;
+    margin-top: 0;
 }
 
 .chord-info h2 {
@@ -190,6 +189,13 @@ select {
     color: #333;
     font-size: 16px;
     margin-bottom: 10px;
+}
+
+/* Emphasize the notes display */
+#chord-notes {
+    font-size: 18px; /* Larger font size */
+    font-weight: bold; /* Bolder text */
+    color: #333; /* Keep color or change if desired */
 }
 
 #chord-fingering {
@@ -205,22 +211,24 @@ select {
 }
 
 .audio-controls {
-    margin-top: 20px;
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 15px;
+    width: 100%;
+    justify-content: center;
 }
 
 .play-button {
     background-color: #1565c0;
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 8px 16px;
-    font-size: 14px;
+    border-radius: 5px; /* Slightly rounder corners */
+    padding: 12px 24px; /* Increased padding */
+    font-size: 16px; /* Larger font size */
+    font-weight: bold; /* Bolder text */
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
+    min-width: 150px; /* Ensure minimum width */
 }
 
 .play-button:hover {
@@ -229,6 +237,7 @@ select {
 
 .play-button:active {
     background-color: #0a3880;
+    transform: scale(0.98); /* Add subtle click effect */
 }
 
 .audio-controls label {
@@ -273,4 +282,23 @@ select {
     .piano-container {
         overflow-x: hidden; /* Hide scrollbar on wider screens */
     }
-} 
+}
+
+#notation-container {
+    width: auto;
+    flex-basis: 45%;
+    min-width: 250px;
+    height: 150px;
+    margin: 0;
+    border: 1px solid #ccc;
+    overflow: hidden;
+}
+
+.details-area {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 30px;
+}

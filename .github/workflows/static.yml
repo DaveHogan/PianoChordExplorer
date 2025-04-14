@@ -1,10 +1,12 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# Workflow for building and deploying static content to GitHub Pages
+name: Build and Deploy Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # Runs on pushes targeting ANY branch
   push:
-    branches: ["main"]
+  # Runs on pull requests targeting the main or develop branches
+  pull_request:
+    branches: ["main", "develop"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -12,8 +14,8 @@ on:
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  pages: write      # Required for deployment steps
+  id-token: write   # Required for deployment steps
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
@@ -22,22 +24,42 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
+  build-and-deploy: # Renamed job
     environment:
+      # Only set environment for actual deployment runs (pushes to main)
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Condition environment based on deployment trigger
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # Build step: Install dependencies (acts as a basic build check)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Or your preferred Node.js version
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+
+      # ----- Deployment Steps (Conditional) -----
       - name: Setup Pages
+        # Only run on direct pushes to main
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
+        # Only run on direct pushes to main
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          # Upload only the src directory
+          path: './src'
+
       - name: Deploy to GitHub Pages
+        # Only run on direct pushes to main
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         id: deployment
         uses: actions/deploy-pages@v4

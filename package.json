@@ -1,0 +1,30 @@
+{
+  "name": "piano-chord-explorer",
+  "version": "1.0.0",
+  "description": "A web application that displays piano chords and their inversions with sound playback",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "serve src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DaveHogan/PianoChordExplorer.git"
+  },
+  "keywords": [
+    "piano",
+    "chords",
+    "music",
+    "education",
+    "web-audio"
+  ],
+  "author": "Dave Hogan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DaveHogan/PianoChordExplorer/issues"
+  },
+  "homepage": "https://davehogan.co.uk/PianoChordExplorer/",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+} 

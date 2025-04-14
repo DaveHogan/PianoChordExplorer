@@ -5,17 +5,17 @@ It was built mostly with Claude 3.7 Sonnet and Cursor so expect AI noise and gar
 This was put together solely to provide quick visuals for another project I'm working on.
 It is a very rough proof of concept and requires significant work to be meaningful, but could be useful on its own.
 
-![Piano Chord Explorer Screenshot](Screenshot.png)
-
-**Try it out online:** [https://davehogan.co.uk/PianoChordExplorer/](https://davehogan.co.uk/PianoChordExplorer/)
+![Piano Chord Explorer Screenshot](src/assets/Screenshot.png)
 
 **GitHub Repository:** [https://github.com/DaveHogan/PianoChordExplorer](https://github.com/DaveHogan/PianoChordExplorer)
+
+**Live Website:** [https://davehogan.co.uk/PianoChordExplorer/](https://davehogan.co.uk/PianoChordExplorer/)
 
 ## Project Status
 
 ⚠️ **Alpha Version**: This project is in early development stage and is not intended for production use.
 
-Contributions are welcome, but please note that this is primarily a personal project with limited ongoing support. See the [CONTRIBUTING.md](CONTRIBUTING.md) file for more information.
+Contributions are welcome, but please note that this is primarily a personal project with limited ongoing support. See the [CONTRIBUTING.md](docs/CONTRIBUTING.md) file for more information.
 
 ## Features
 
@@ -27,24 +27,71 @@ Contributions are welcome, but please note that this is primarily a personal pro
 - Auto-play option for hearing chords as you select them
 - Play individual notes by clicking on piano keys
 - Toggle note labels on/off
+- Staff notation display using VexFlow
+
+## Project Structure
+
+```
+PianoChordExplorer/
+├── src/                    # Source files
+│   ├── assets/            # Images and static files
+│   ├── css/               # Stylesheets
+│   ├── js/                # JavaScript files
+│   └── index.html         # Main HTML file
+├── docs/                  # Documentation
+├── .github/              # GitHub configuration
+├── .gitignore            # Git ignore rules
+├── LICENSE               # MIT License
+├── package.json          # Project configuration
+└── README.md             # Project documentation
+```
+
+## Development Setup
+
+This project uses a minimal development setup with just one dependency (`serve`) to provide a proper development environment. This ensures:
+- Correct MIME types for files
+- No CORS issues during development
+- Proper URL routing
+- Easy testing across different devices
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/DaveHogan/PianoChordExplorer.git
+   cd PianoChordExplorer
+   ```
+
+2. Install the development server (only needed once):
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm start
+   ```
+
+4. Open your browser and navigate to `http://localhost:3000`
+
+For production, you can simply deploy the contents of the `src` directory to any static file hosting service.
 
 ## How to Use
 
-1. Open `index.html` in your web browser
-2. Select a root note from the dropdown menu
-3. Choose a chord type (Major, Minor, etc.)
-4. Select an inversion type if desired
-5. The chord will be displayed on the piano keyboard
-6. Click "Play Chord" to hear the chord sounds
-7. Toggle "Auto-play on change" to automatically hear chords when selections change
-8. Click individual piano keys to hear single notes
+1. Select a root note from the dropdown menu
+2. Choose a chord type (Major, Minor, etc.)
+3. Select an inversion type if desired
+4. The chord will be displayed on the piano keyboard
+5. Click "Play Chord" to hear the chord sounds
+6. Toggle "Auto-play on change" to automatically hear chords when selections change
+7. Click individual piano keys to hear single notes
 
 ## Technologies Used
 
-- HTML
-- CSS
+- HTML5
+- CSS3
 - JavaScript (Vanilla)
 - Web Audio API
+- VexFlow (for music notation rendering)
+- Node.js (for development server)
 
 ## Possible Future Improvements
 
@@ -76,32 +123,6 @@ Contributions are welcome, but please note that this is primarily a personal pro
 - Show chord usage examples in popular songs
 - Include optional staff notation view
 
-## Implementing Staff Notation
+## License
 
-Adding musical staff notation would require the following components:
-
-### Core Requirements
-- **Staff Rendering System**: Implementation of the five-line staff with proper spacing
-- **Clef Display**: Support for both treble and bass clefs (grand staff for piano)
-- **Note Rendering**: Capability to draw different note types with correct positioning
-- **Accidental Handling**: Display sharps, flats, and naturals correctly
-
-### Technical Approaches
-1. **Canvas-Based Drawing**: Using HTML5 Canvas for custom rendering
-2. **SVG-Based Approach**: Using SVG for better scaling and manipulation
-3. **Music Notation Library**: Utilizing existing libraries like VexFlow or abc.js
-
-### Data Transformation
-- Convert chord data to appropriate notation format
-- Determine correct staff placement (treble/bass clef)
-- Handle proper enharmonic spelling based on key context
-
-### User Interface Considerations
-- Add new section in the UI to display the notation
-- Create toggle to show/hide notation
-- Implement highlighting between notation and piano keys
-
-### Accessibility Requirements
-- Provide alternative text descriptions
-- Ensure keyboard navigation
-- Maintain proper contrast for readability 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
