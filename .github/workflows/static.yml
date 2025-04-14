@@ -1,5 +1,5 @@
-# Workflow for building and deploying static content to GitHub Pages
-name: Build and Deploy Pages
+# Workflow for building, versioning, and deploying static content to GitHub Pages
+name: Build, Version, and Deploy Pages
 
 on:
   # Runs on pushes targeting ANY branch
@@ -12,56 +12,60 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy: # Renamed job
-    # Removed the job-level 'if' condition to allow job to run on develop/PRs
-    # environment: # Environment needs to be configured differently or steps conditioned
-    #   name: github-pages
-    #   url: ${{ steps.deployment.outputs.page_url }}
-    # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  build-and-deploy:
     runs-on: ubuntu-latest
-    
-    # Set permissions at the job level - needed for potential deployment steps
     permissions:
-      contents: read
-      pages: write      # Required for deployment steps
-      id-token: write   # Required for deployment steps
-      
-    # Set concurrency at job level if needed, relates to pages deployment
+      contents: write # Need write access to push commit/tag
+      pages: write
+      id-token: write
     concurrency:
-      group: "pages-${{ github.ref }}" # Group by ref to allow concurrent builds but serialize deploys to main
-      cancel-in-progress: true # Cancel redundant builds/PR checks
-      
+      group: "pages-${{ github.ref }}"
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # We need to fetch tags for npm version to work correctly
+          fetch-depth: 0 
+          # Use a token with push access if GITHUB_TOKEN is insufficient
+          # token: ${{ secrets.GH_PAT }} 
 
-      # Build step: Install dependencies (acts as a basic build check)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Or your preferred Node.js version
+          node-version: '20'
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
 
+      # --- Automatic Version Bump Step --- 
+      - name: Bump version and push tag
+        # Only run on direct pushes to main branch
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          # Use --force-git-tag with npm version >= 9.6.0 if needed for overwriting tags during tests/retries
+          # Ensure you have pulled tags using fetch-depth: 0 in checkout
+          npm version patch -m "chore: Bump version to %s [skip ci]"
+          git push origin main --follow-tags # Push the commit and the tag
+        # env:
+          # Use default GITHUB_TOKEN first. If it fails due to permissions,
+          # switch checkout token and potentially add env var here using a PAT.
+          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+
       # ----- Deployment Steps (Conditional) -----
       - name: Setup Pages
-        # Only run on direct pushes to main
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: actions/configure-pages@v5
-        # with:
-          # Optionally configure base path, custom domains, etc.
 
       - name: Upload artifact for deployment
-        # Only run on direct pushes to main
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload only the src directory
           path: './src'
 
       - name: Deploy to GitHub Pages
-        # Only run on direct pushes to main
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         id: deployment
         uses: actions/deploy-pages@v4
